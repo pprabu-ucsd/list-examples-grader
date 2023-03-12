@@ -16,7 +16,6 @@ else
     exit
 fi
 
-cd ..
 
 
 cp student-submission/ListExamples.java ./
@@ -25,7 +24,7 @@ set +e
 
 javac -cp $CPATH *.java
 
-if [[ -f TestListExamples.class ]] && [[ -f ListExamples.class ]] && [[ $(wc -l < grep_results.txt) -eq 0 ]]
+if [[ -f TestListExamples.class ]] && [[ -f ListExamples.class ]]
 then
     echo 'COMPILE: SUCCESS'
 else
@@ -33,14 +32,16 @@ else
     exit
 fi
 
-java -cp $CPATH org.junit.runner.JUnitCore TestListExamples > output.txt
+java -cp $CPATH org.junit.runner.JUnitCore TestListExamples > junit-output.txt
 
-grep -h 'FAILURES!!!' output.txt > grep_results.txt
+grep -h 'FAILURES!!!' junit-output.txt > grep_results.txt
 
 
 if [[ $(wc -l <grep_results.txt) -ge 1 ]]
 then
     echo 'You have test failures. Fix them.'
+    cat junit-output.txt
 else
     echo 'You passed all of your tests!'
+    cat junit-output.txt
 fi
